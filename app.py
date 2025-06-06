@@ -7,7 +7,8 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 
 # ✅ Step 1: Securely load your OpenAI API key from environment variables
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
 
 # ✅ Step 2: Load the text from file (cached)
 @st.cache_data
