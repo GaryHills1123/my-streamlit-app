@@ -13,11 +13,11 @@ COPY . .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy Nginx config
-COPY nginx.conf /etc/nginx/sites-available/default
+# ✅ Copy Nginx config to the correct location
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 (Nginx)
 EXPOSE 80
 
-# Run Streamlit on default port 8501 and let Nginx proxy from 80
-CMD service nginx start && streamlit run app.py --server.enableXsrfProtection=false
+# Run both Nginx and Streamlit
+CMD service nginx start && streamlit run app.py --server.port=8501 --server.enableXsrfProtection=false
