@@ -1,21 +1,23 @@
-# Use a Python base image
+# Use a lightweight Python image
 FROM python:3.10-slim
 
-# Install dependencies
-RUN pip install streamlit
-
-# Create app directory
-WORKDIR /app
-COPY . /app
-
-# Install your app's requirements
-RUN pip install -r requirements.txt
-
-# Install nginx
+# Install system dependencies
 RUN apt-get update && apt-get install -y nginx
 
-# Copy custom nginx config
+# Set the working directory
+WORKDIR /app
+
+# Copy files
+COPY . .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Replace the default Nginx config
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Start both nginx and streamlit
-CMD service nginx start && streamlit run app.py --server.port=8501 --server.enableCORS=false
+# Expose port 80 for Render
+EXPOSE 80
+
+# Start Nginx and Streamlit (on port 80), disable XSRF protection to help iframe embedding
+CMD service nginx start && streamlit run app.py --server.port=80 --server.enableXsrfProtection=false
