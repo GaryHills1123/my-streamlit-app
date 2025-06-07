@@ -3,9 +3,10 @@ import streamlit as st
 import openai
 
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
+
 
 # Streamlit page setup
 st.set_page_config(
