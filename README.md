@@ -1,21 +1,56 @@
----
-title: Teaching In A Digital Age
-emoji: 🚀
-colorFrom: red
-colorTo: red
-sdk: streamlit
-app_file: streamlit_app.py
-tags:
-- streamlit
-pinned: false
-short_description: Streamlit chatbot for the textbook
-license: ncsa
----
+# 📘 Ask the Textbook
 
+An AI-powered learning assistant trained on Tony Bates' *Teaching in a Digital Age* — built with Streamlit, LangChain, and OpenAI, and embedded in a Rise course.
 
-# Welcome to Streamlit!
+## 🔍 What It Does
 
-Edit `/src/streamlit_app.py` to customize this app to your heart's desire. :heart:
+This app allows learners to:
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+- Ask natural-language questions about the book
+- Get context-rich answers powered by GPT-4o
+- Interact directly inside an eLearning module or website
+
+## 🎯 Audience
+
+This project is designed for:
+
+- Instructional designers
+- Online educators
+- Learning technology teams exploring AI integration
+
+## 🌐 Live Demo
+
+▶️ [Launch the chatbot](https://my-streamlit-app-yj1z.onrender.com)
+
+💬 Embedded in Rise (optional link): *Coming soon or hosted elsewhere*
+
+## 🛠 Tech Stack
+
+- **Streamlit** – web app framework
+- **LangChain** – for document chunking and retrieval
+- **OpenAI GPT-4o** – language model
+- **FAISS** – vector search
+- **Render** – deployment platform
+- **Rise + WordPress** – course authoring and delivery
+
+## 📂 Files
+
+- `app.py` – Main app logic
+- `teaching-in-a-digital-age.txt` – Source content
+- `requirements.txt` – Python dependencies
+- `Dockerfile` + `nginx.conf` – Render-compatible deploy
+
+## 📚 Why This Book?
+
+- Written by Tony Bates, a global authority on online learning
+- Openly licensed (CC BY)
+- Modular, searchable, and educationally rich
+- Widely used in higher ed and instructional design contexts
+
+## 🚀 How to Run Locally
+
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+cd your-repo-name
+pip install -r requirements.txt
+streamlit run app.py
