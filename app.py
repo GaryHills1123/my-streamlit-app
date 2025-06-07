@@ -59,13 +59,17 @@ if query:
     with st.spinner("Thinking..."):
         response = qa.invoke(query)
 
-        # Extract clean answer (avoid orange box)
+        # Extract answer text
         answer_text = response["result"] if isinstance(response, dict) and "result" in response else str(response)
 
+        # Sanitize Markdown for HTML rendering
+        clean_answer = answer_text.replace("\n", "<br>").replace("**", "<b>").replace("*", "•")
+
+        # Output answer in a styled box
         st.markdown("### 📖 Answer", unsafe_allow_html=True)
         st.markdown(f"""
-        <div style="background-color: #f0f4f8; padding: 1em; border-radius: 8px; line-height: 1.6;">
-        {answer_text}
+        <div style="background-color: #f0f4f8; padding: 1em; border-radius: 8px; font-size: 16px; line-height: 1.6;">
+            {clean_answer}
         </div>
         """, unsafe_allow_html=True)
 
