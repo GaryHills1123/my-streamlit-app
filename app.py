@@ -7,29 +7,28 @@ from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 
-
-# Streamlit page setup
+# Page config
 st.set_page_config(
     page_title="Ask the Textbook",
     page_icon="📘",
     layout="centered"
 )
 
-# Load API key from environment
+# Load OpenAI key
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OPENAI_API_KEY is not set. Please add it in your Render environment variables.")
     st.stop()
 
-openai.api_key = api_key  # Required by LangChain/OpenAI under the hood
+openai.api_key = api_key
 
-# Load textbook text file
+# Load textbook content
 @st.cache_data
 def load_text():
     with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="ignore") as file:
         return file.read()
 
-# Set up the vector store and retrieval chain
+# Set up vector store + chain
 @st.cache_resource
 def setup_qa():
     full_text = load_text()
@@ -39,12 +38,11 @@ def setup_qa():
     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
     vectorstore = FAISS.from_documents(docs, embeddings)
     retriever = vectorstore.as_retriever()
-
     llm = ChatOpenAI(model_name="gpt-4o", temperature=0.3, openai_api_key=api_key)
 
     return RetrievalQA.from_chain_type(llm=llm, retriever=retriever, chain_type="stuff")
 
-# UI layout
+# Streamlit UI
 st.markdown("<h1 style='text-align: center;'>📘 Ask the Textbook</h1>", unsafe_allow_html=True)
 st.markdown(
     "<p style='text-align: center; font-size: 18px;'>"
@@ -59,7 +57,7 @@ qa = setup_qa()
 
 if query:
     with st.spinner("Thinking..."):
-        answer = qa.run(query)
+        answer = qa.invoke(query)  # ✅ updated from .run()
         st.markdown("### 📖 Answer")
         st.write(answer)
 
