@@ -7,7 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 
-# Page setup
+# Streamlit config
 st.set_page_config(
     page_title="Ask the Textbook",
     page_icon="📘",
@@ -22,13 +22,13 @@ if not api_key:
 
 openai.api_key = api_key
 
-# Load the textbook
+# Load the book
 @st.cache_data
 def load_text():
     with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="ignore") as file:
         return file.read()
 
-# Set up QA chain
+# Set up chain
 @st.cache_resource
 def setup_qa():
     full_text = load_text()
@@ -42,16 +42,7 @@ def setup_qa():
 
     return RetrievalQA.from_chain_type(llm=llm, retriever=retriever, chain_type="stuff")
 
-# UI
-st.markdown("<h1 style='text-align: center;'>📘 Ask the Textbook</h1>", unsafe_allow_html=True)
-st.markdown(
-    "<p style='text-align: center; font-size: 18px;'>"
-    "Explore Tony Bates' insights on digital teaching — one question at a time."
-    "</p>", 
-    unsafe_allow_html=True
-)
-st.divider()
-
+# Input and response UI only
 query = st.text_input("💬 What would you like to ask?")
 qa = setup_qa()
 
@@ -59,17 +50,12 @@ if query:
     with st.spinner("Thinking..."):
         response = qa.invoke(query)
 
-        # Extract answer text
         answer_text = response["result"] if isinstance(response, dict) and "result" in response else str(response)
-
-        # Sanitize Markdown for HTML rendering
         clean_answer = answer_text.replace("\n", "<br>").replace("**", "<b>").replace("*", "•")
 
-        # Output answer in a styled box
         st.markdown("### 📖 Answer", unsafe_allow_html=True)
         st.markdown(f"""
         <div style="background-color: #f0f4f8; padding: 1em; border-radius: 8px; font-size: 16px; line-height: 1.6;">
             {clean_answer}
         </div>
         """, unsafe_allow_html=True)
-
