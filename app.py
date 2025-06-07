@@ -7,41 +7,50 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 import openai
 
-# ✅ Step 1: Set your OpenAI API key from Render environment variable
+# Set page config
+st.set_page_config(
+    page_title="Ask Tony: Digital Teaching Chatbot",
+    page_icon="📘",
+    layout="centered"
+)
+
+# Set OpenAI API key
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
-    st.error("OPENAI_API_KEY not set in environment variables.")
+    st.error("OPENAI_API_KEY not set.")
     st.stop()
 
-openai.api_key = api_key  # LangChain needs this set
+openai.api_key = api_key
 
-# ✅ Step 2: Load the text file
+# Load the book
 @st.cache_data
 def load_text():
-    with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="ignore") as file:
-        return file.read()
+    with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="ignore") as f:
+        return f.read()
 
-# ✅ Step 3: Create the QA chain
+# Build QA system
 @st.cache_resource
 def setup_qa():
-    full_text = load_text()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = splitter.create_documents([full_text])
-
+    text = load_text()
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    docs = splitter.create_documents([text])
     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
     vectorstore = FAISS.from_documents(docs, embeddings)
     retriever = vectorstore.as_retriever()
     llm = ChatOpenAI(model_name="gpt-4o", temperature=0.3, openai_api_key=api_key)
-
     return RetrievalQA.from_chain_type(llm=llm, retriever=retriever, chain_type="stuff")
 
-# ✅ Streamlit UI
-st.title("📘 Teaching in a Digital Age Bot")
-st.markdown("Ask a question based on Tony Bates' open textbook about digital pedagogy:")
+# UI
+st.markdown("<h1 style='text-align: center;'>📘 Ask Tony</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 18px;'>Your friendly guide to <i>Teaching in a Digital Age</i> by Tony Bates</p>", unsafe_allow_html=True)
 
+st.divider()
+
+query = st.text_input("💬 Ask a question based on the book:")
 qa = setup_qa()
-query = st.text_input("Your question")
 
 if query:
-    st.markdown("### Answer")
-    st.write(qa.run(query))
+    with st.spinner("Thinking..."):
+        answer = qa.run(query)
+        st.markdown("### 📖 Answer")
+        st.write(answer)
