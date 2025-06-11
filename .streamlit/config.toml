@@ -1,0 +1,16 @@
+from pathlib import Path
+
+# Re-create the Streamlit config file with the preferred theme color after reset
+config_toml_content = """
+[theme]
+primaryColor = "#4baaf4"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5F5"
+textColor = "#000000"
+font = "sans serif"
+"""
+
+config_path = Path("/mnt/data/config.toml")
+config_path.write_text(config_toml_content)
+
+config_path
