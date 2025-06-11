@@ -30,7 +30,7 @@ Ideal for:
 ## 🌐 Try It Out
 
 📺 [Launch the chatbot](https://my-streamlit-app-yj1z.onrender.com)  
-💬 *Coming soon: Embedded in an interactive Rise course*
+💬 [Embedded in an interactive Rise course] (https://www.garyhills.dev/ai/)
 
 ---
 
