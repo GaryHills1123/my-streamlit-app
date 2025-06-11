@@ -1,61 +1,57 @@
-import os
 import streamlit as st
-import openai
-
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.vectorstores import FAISS
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
+from langchain.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.prompts import PromptTemplate
+import pickle
 
-# Streamlit config
-st.set_page_config(
-    page_title="Ask the Textbook",
-    page_icon="📘",
-    layout="centered"
-)
+# Load vectorstore (FAISS)
+@st.cache_resource
+def load_vectorstore():
+    with open("faiss_store.pkl", "rb") as f:
+        return pickle.load(f)
 
-# Load OpenAI key
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    st.error("OPENAI_API_KEY is not set. Please add it in your Render environment variables.")
-    st.stop()
-
-openai.api_key = api_key
-
-# Load the book
-@st.cache_data
-def load_text():
-    with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="ignore") as file:
+# Load system prompt from file
+def load_system_prompt():
+    with open("initial_prompt.txt", "r", encoding="utf-8") as file:
         return file.read()
 
-# Set up chain
-@st.cache_resource
-def setup_qa():
-    full_text = load_text()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = splitter.create_documents([full_text])
+# Set up the page
+st.set_page_config(page_title="Ask the Textbook", page_icon="📘")
+st.title("📘 Ask the Textbook")
+st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
-    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    vectorstore = FAISS.from_documents(docs, embeddings)
-    retriever = vectorstore.as_retriever()
-    llm = ChatOpenAI(model_name="gpt-4o", temperature=0.3, openai_api_key=api_key)
+# Load system prompt + vectorstore
+vectorstore = load_vectorstore()
+system_prompt = load_system_prompt()
 
-    return RetrievalQA.from_chain_type(llm=llm, retriever=retriever, chain_type="stuff")
+# Create LangChain-style prompt template
+prompt_template = PromptTemplate.from_template(system_prompt)
 
-# Input and response UI only
-query = st.text_input("💬 What would you like to ask?")
-qa = setup_qa()
+# Initialize OpenAI Chat model
+llm = ChatOpenAI(model="gpt-4o", temperature=0.3)
 
-if query:
-    with st.spinner("Thinking..."):
-        response = qa.invoke(query)
+# Set up the QA chain with the system prompt
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=vectorstore.as_retriever(),
+    chain_type_kwargs={"prompt": prompt_template}
+)
 
-        answer_text = response["result"] if isinstance(response, dict) and "result" in response else str(response)
-        clean_answer = answer_text.replace("\n", "<br>").replace("**", "<b>").replace("*", "•")
+# Chat history handling
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-        st.markdown("### 📖 Answer", unsafe_allow_html=True)
-        st.markdown(f"""
-        <div style="background-color: #f0f4f8; padding: 1em; border-radius: 8px; font-size: 16px; line-height: 1.6;">
-            {clean_answer}
-        </div>
-        """, unsafe_allow_html=True)
+for message in st.session_state.messages:
+    st.chat_message(message["role"]).markdown(message["content"])
+
+# Input field
+if user_input := st.chat_input("Ask a question about the textbook..."):
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    st.chat_message("user").markdown(user_input)
+
+    with st.chat_message("assistant"):
+        response = qa_chain.run(user_input)
+        st.markdown(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
