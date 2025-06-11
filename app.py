@@ -1,26 +1,22 @@
-import streamlit as st
-from langchain_community.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA
+import os
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain.schema.document import Document
+from langchain.text_splitter import CharacterTextSplitter
 
-from vectorstore_utils import load_or_build_vectorstore
+def load_or_build_vectorstore():
+    faiss_index_path = "faiss_index"
+    if os.path.exists(faiss_index_path):
+        return FAISS.load_local(faiss_index_path, OpenAIEmbeddings(), allow_dangerous_deserialization=True)
 
-st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
+    # ✅ Load with fallback for encoding issues
+    with open("teaching-in-a-digital-age.txt", "r", encoding="utf-8", errors="replace") as f:
+        raw_text = f.read()
 
-st.title("📘 Ask the Textbook")
-st.markdown("Ask anything about Tony Bates' *Teaching in a Digital Age*")
+    docs = [Document(page_content=raw_text)]
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    texts = text_splitter.split_documents(docs)
 
-query = st.text_input("💬 Ask a question:")
-
-vectorstore = load_or_build_vectorstore()
-
-llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=vectorstore.as_retriever(),
-    chain_type="stuff"
-)
-
-if query:
-    result = qa_chain.run(query)
-    st.write(result)
+    vectorstore = FAISS.from_documents(texts, OpenAIEmbeddings())
+    vectorstore.save_local(faiss_index_path)
+    return vectorstore
