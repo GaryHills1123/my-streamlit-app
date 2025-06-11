@@ -1,30 +1,30 @@
-# vectorstore_utils.py
-
 import os
-from langchain_core.documents import Document
+import pickle
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
 
-def load_or_build_vectorstore(
-    txt_path="teaching-in-a-digital-age.txt", 
-    faiss_dir="faiss_index"
-):
-    if not os.path.exists(txt_path):
-        raise FileNotFoundError(f"Missing file: {txt_path}")
+VECTORSTORE_FILENAME = "faiss_store.pkl"
 
-    if os.path.exists(faiss_dir):
-        return FAISS.load_local(faiss_dir, OpenAIEmbeddings(), allow_dangerous_deserialization=True)
+def load_or_build_vectorstore(text_path="teaching-in-a-digital-age.txt"):
+    if os.path.exists(VECTORSTORE_FILENAME):
+        with open(VECTORSTORE_FILENAME, "rb") as f:
+            return pickle.load(f)
 
-    with open(txt_path, "r", encoding="latin-1") as f:
-        raw_text = f.read()
-
-    docs = [Document(page_content=raw_text)]
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
-    chunks = splitter.split_documents(docs)
+    loader = TextLoader(text_path, encoding="utf-8")
+    docs = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splits = text_splitter.split_documents(docs)
 
     embeddings = OpenAIEmbeddings()
-    store = FAISS.from_documents(chunks, embeddings)
-    store.save_local(faiss_dir)
+    vectorstore = FAISS.from_documents(splits, embeddings)
 
-    return store
+    with open(VECTORSTORE_FILENAME, "wb") as f:
+        pickle.dump(vectorstore, f)
+
+    return vectorstore
+
+def load_system_prompt(prompt_path="initial_prompt.txt"):
+    with open(prompt_path, "r", encoding="utf-8") as f:
+        return f.read()
