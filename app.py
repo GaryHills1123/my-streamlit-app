@@ -6,8 +6,19 @@ from vectorstore_utils import load_or_build_vectorstore
 
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 
-st.title("📘 Ask the Textbook")
-st.markdown("Ask anything about Tony Bates' *Teaching in a Digital Age*")
+st.markdown(
+    """
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="assets/animated-question.gif" width="28"/>
+        <h1 style="font-size: 1.8em; margin: 0;">Ask the Textbook</h1>
+    </div>
+    <p style="font-size: 1.1em; color: gray; margin-top: 0.25em;">
+        Ask anything about Tony Bates' <em>Teaching in a Digital Age</em>
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
 
 query = st.text_input("💬 Ask a question:")
 
