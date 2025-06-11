@@ -12,7 +12,7 @@ query = st.text_input("💬 Ask a question:")
 
 vectorstore = load_or_build_vectorstore()
 
-llm = ChatOpenAI(model="gpt-4o", temperature=0.3)
+llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
 
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
