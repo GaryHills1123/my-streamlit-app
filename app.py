@@ -7,7 +7,8 @@ from vectorstore_utils import load_or_build_vectorstore
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 
 st.title("📘 Ask the Textbook")
-st.markdown("Ask anything about Tony Bates' *Teaching in a Digital Age*")
+st.markdown("Ask a grounded, pedagogically trained AI assistant—modeled after Tony Bates—for clear, textbook-based answers, 
+explained step by step, formatted for learning, and limited strictly to content from Teaching in a Digital Age.")
 
 query = st.text_input("💬 Ask a question:")
 
