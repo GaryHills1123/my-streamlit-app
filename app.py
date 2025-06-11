@@ -21,7 +21,7 @@ def load_or_build_vectorstore():
         with open("faiss_store.pkl", "rb") as f:
             return pickle.load(f)
     else:
-        with open(txt_path, "r", encoding="utf-8") as f:
+        with open(txt_path, "r", encoding="latin-1") as f:
             raw_text = f.read()
 
         docs = [Document(page_content=raw_text)]
