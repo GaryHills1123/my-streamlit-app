@@ -11,12 +11,13 @@ def load_or_build_vectorstore():
         with open("faiss_store.pkl", "rb") as f:
             return pickle.load(f)
 
-    # Detect file encoding using chardet
-    with open("teaching-in-a-digital-age.txt", "rb") as raw_file:
-        raw_data = raw_file.read()
-        result = chardet.detect(raw_data)
-        encoding = result["encoding"]
+    # Detect encoding
+    with open("teaching-in-a-digital-age.txt", "rb") as f:
+        raw_data = f.read()
+    result = chardet.detect(raw_data)
+    encoding = result["encoding"]
 
+    # Use detected encoding in TextLoader
     loader = TextLoader("teaching-in-a-digital-age.txt", encoding=encoding)
     docs = loader.load()
 
