@@ -5,7 +5,7 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader
+from langchain_core.documents import Document
 import pickle
 import os
 
@@ -21,8 +21,11 @@ def load_or_build_vectorstore():
         with open("faiss_store.pkl", "rb") as f:
             return pickle.load(f)
     else:
-        loader = TextLoader(txt_path, encoding="utf-8")
-        docs = loader.load()
+        with open(txt_path, "r", encoding="utf-8") as f:
+            raw_text = f.read()
+
+        docs = [Document(page_content=raw_text)]
+
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
         chunks = splitter.split_documents(docs)
 
@@ -44,7 +47,7 @@ st.set_page_config(page_title="Ask the Textbook", page_icon="📘")
 st.title("📘 Ask the Textbook")
 st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
-# Debugging: Show working directory and files
+# Debug info
 st.write("📂 Current working directory:", os.getcwd())
 st.write("📄 Files found in this directory:", os.listdir("."))
 
