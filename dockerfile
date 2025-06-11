@@ -7,17 +7,20 @@ RUN apt-get update && apt-get install -y nginx
 # Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy all files into the container
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ✅ Copy Nginx config to the correct location
+# ✅ Copy custom Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80 (Nginx)
+# ✅ Clean up legacy file (no longer used with FAISS)
+RUN rm -f /app/faiss_store.pkl
+
+# Expose port for Nginx (which proxies to Streamlit)
 EXPOSE 80
 
-# Run both Nginx and Streamlit
+# ✅ Start Nginx and Streamlit
 CMD service nginx start && streamlit run app.py --server.port=8501 --server.enableXsrfProtection=false
