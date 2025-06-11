@@ -1,41 +1,54 @@
 import streamlit as st
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+import os
 from langchain.chains import RetrievalQA
-from vectorstore_utils import load_or_build_vectorstore
+from langchain.chat_models import ChatOpenAI
+from vectorstore_utils import load_or_build_vectorstore, load_system_prompt
 
-# Load vectorstore from file or build it
-vectorstore = load_or_build_vectorstore()
+# Load environment variable for OpenAI API key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    st.error("Please set your OpenAI API key in the environment.")
+    st.stop()
 
-# Load system prompt from file
-with open("initial_prompt.txt", "r", encoding="utf-8") as f:
-    system_prompt = f.read()
+# Page configuration
+st.set_page_config(page_title="Ask the Textbook", layout="wide")
+st.title("📘 Ask the Textbook")
+st.subheader("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
-# Setup chat model
-llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
+# Debugging output
+with st.expander("📂 Current working directory:", expanded=False):
+    st.code(f"{os.getcwd()}")
+with st.expander("📄 Files found in this directory:", expanded=False):
+    st.code(os.listdir())
 
-# Prompt template with system role
-prompt = ChatPromptTemplate.from_messages([
-    ("system", system_prompt),
-    ("human", "{query}")
-])
+# Load vectorstore
+with st.spinner("Loading knowledge base..."):
+    vectorstore = load_or_build_vectorstore()
 
-# Build RetrievalQA chain
+# Load system prompt
+system_prompt = load_system_prompt()
+
+# Initialize the LLM and RetrievalQA chain
+llm = ChatOpenAI(model="gpt-4o", temperature=0, openai_api_key=OPENAI_API_KEY)
+
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
-    chain_type="stuff",
     retriever=vectorstore.as_retriever(),
-    chain_type_kwargs={"prompt": prompt}
+    chain_type="stuff",
+    chain_type_kwargs={"document_variable_name": "context"},
+    return_source_documents=True
 )
 
-# --- Streamlit UI ---
-
-st.title("📘 Ask the Textbook")
-st.markdown("Ask anything about Tony Bates' *Teaching in a Digital Age*")
-
-query = st.text_input("💬 Ask a question:")
-
+# Ask a question
+query = st.text_input("💬 Ask a question:", placeholder="e.g. What is online learning according to Tony Bates?")
 if query:
     with st.spinner("Thinking..."):
-        result = qa_chain.run({"query": query})
-    st.write(result)
+        result = qa_chain({"query": query})
+        st.markdown("### 📎 Answer")
+        st.write(result["result"])
+
+        # Show source docs (optional)
+        with st.expander("🔍 Source Documents"):
+            for i, doc in enumerate(result["source_documents"]):
+                st.markdown(f"**{i+1}.** {doc.metadata.get('source', 'N/A')}")
+                st.write(doc.page_content[:500] + "...")
