@@ -7,6 +7,10 @@ RUN apt-get update && apt-get install -y nginx
 # Set working directory
 WORKDIR /app
 
+# ✅ Copy app files and Streamlit theme config
+COPY . .
+COPY .streamlit/ .streamlit/
+
 # Copy all files into the container
 COPY . .
 
