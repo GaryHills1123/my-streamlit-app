@@ -3,7 +3,7 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.chains.question_answering import load_qa_chain
 
-from vectorstore_utils import load_or_build_vectorstore, load_system_prompt
+from vectorstore_utils import load_or_build_vectorstore
 
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 
