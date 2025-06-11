@@ -9,14 +9,19 @@ from langchain_community.document_loaders import TextLoader
 import pickle
 import os
 
-# Load or build FAISS vectorstore from textbook
+# Load or build FAISS vectorstore
 @st.cache_resource
 def load_or_build_vectorstore():
+    txt_path = os.path.join(os.getcwd(), "teaching-in-a-digital-age.txt")
+
+    if not os.path.exists(txt_path):
+        raise FileNotFoundError(f"❌ File not found at expected path: {txt_path}")
+
     if os.path.exists("faiss_store.pkl"):
         with open("faiss_store.pkl", "rb") as f:
             return pickle.load(f)
     else:
-        loader = TextLoader("teaching-in-a-digital-age.txt", encoding="utf-8")
+        loader = TextLoader(txt_path, encoding="utf-8")
         docs = loader.load()
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
         chunks = splitter.split_documents(docs)
@@ -29,27 +34,31 @@ def load_or_build_vectorstore():
 
         return store
 
-# Load system prompt from file
+# Load system prompt
 def load_system_prompt():
     with open("initial_prompt.txt", "r", encoding="utf-8") as file:
         return file.read()
 
-# Set up the Streamlit app UI
+# Streamlit UI
 st.set_page_config(page_title="Ask the Textbook", page_icon="📘")
 st.title("📘 Ask the Textbook")
 st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
-# Load resources
+# Debugging: Show working directory and files
+st.write("📂 Current working directory:", os.getcwd())
+st.write("📄 Files found in this directory:", os.listdir("."))
+
+# Load system prompt and vectorstore
 system_prompt = load_system_prompt()
 vectorstore = load_or_build_vectorstore()
 
-# Create prompt template
+# Prepare prompt template
 prompt_template = PromptTemplate.from_template(system_prompt)
 
-# Load GPT-4o model
+# Initialize LLM
 llm = ChatOpenAI(model="gpt-4o", temperature=0.3)
 
-# Set up the QA chain with prompt injection
+# Create QA chain
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=vectorstore.as_retriever(),
@@ -57,14 +66,14 @@ qa_chain = RetrievalQA.from_chain_type(
     chain_type_kwargs={"prompt": prompt_template}
 )
 
-# Display chat history
+# Chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for message in st.session_state.messages:
     st.chat_message(message["role"]).markdown(message["content"])
 
-# Handle user question
+# User input
 if user_input := st.chat_input("Ask a question about the textbook..."):
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.chat_message("user").markdown(user_input)
