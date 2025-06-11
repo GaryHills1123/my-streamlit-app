@@ -12,7 +12,7 @@ query = st.text_input("💬 Ask a question:")
 
 vectorstore = load_or_build_vectorstore()
 
-# "temperature ∈ [0, 1] controls randomness: 0 yields deterministic output, 1 allows maximum creativity."
+# temperature ∈ [0, 1] controls randomness: 0 yields deterministic output, 1 allows maximum creativity.
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
 qa_chain = RetrievalQA.from_chain_type(
