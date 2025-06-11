@@ -5,13 +5,8 @@ from langchain.chains import RetrievalQA
 from vectorstore_utils import load_or_build_vectorstore
 
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
-
-col1, col2 = st.columns([1, 12])  # Adjust ratio for spacing
-with col1:
-    st.image("assets/animated-question.gif", width=28)
-with col2:
-    st.markdown("### Ask the Textbook")
-    st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
+st.title("Ask the Textbook")
+st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
 query = st.text_input("💬 Ask a question:")
 
