@@ -1,24 +1,17 @@
 import streamlit as st
+
 from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
-
 from vectorstore_utils import load_or_build_vectorstore
 
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 
-st.markdown(
-    """
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <img src="assets/animated-question.gif" width="28"/>
-        <h1 style="font-size: 1.8em; margin: 0;">Ask the Textbook</h1>
-    </div>
-    <p style="font-size: 1.1em; color: gray; margin-top: 0.25em;">
-        Ask anything about Tony Bates' <em>Teaching in a Digital Age</em>
-    </p>
-    """,
-    unsafe_allow_html=True
-)
-
+col1, col2 = st.columns([1, 12])  # Adjust ratio for spacing
+with col1:
+    st.image("assets/animated-question.gif", width=28)
+with col2:
+    st.markdown("### Ask the Textbook")
+    st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
 query = st.text_input("💬 Ask a question:")
 
