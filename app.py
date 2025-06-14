@@ -1,6 +1,3 @@
-# import streamlit.web.server.server_util as server_util
-# server_util._add_header = lambda *args, **kwargs: None
-
 import streamlit as st
 from elevenlabs.client import ElevenLabs
 client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
