@@ -3,6 +3,7 @@
 
 import streamlit as st
 
+from elevenlabs import generate, set_api_key
 from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from vectorstore_utils import load_or_build_vectorstore
