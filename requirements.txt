@@ -6,4 +6,4 @@ openai
 faiss-cpu
 tiktoken
 chardet
-elevenlabs
+elevenlabs>=1.0.0
