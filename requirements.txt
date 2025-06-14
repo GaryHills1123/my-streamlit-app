@@ -1,5 +1,3 @@
---upgrade-strategy eager
---force-reinstall
 elevenlabs>=1.0.0
 streamlit
 langchain
