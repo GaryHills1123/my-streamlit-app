@@ -1,3 +1,6 @@
+--upgrade-strategy eager
+--force-reinstall
+elevenlabs>=1.0.0
 streamlit
 langchain
 langchain-openai
@@ -6,4 +9,3 @@ openai
 faiss-cpu
 tiktoken
 chardet
-elevenlabs>=1.0.0
