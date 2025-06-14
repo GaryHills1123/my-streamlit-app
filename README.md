@@ -1,100 +1,80 @@
-# 📘 Ask the Textbook – AI-Powered Learning Assistant
-
-*Turn a textbook into a tutor. This tool lets learners query Tony Bates’* Teaching in a Digital Age *using natural language—receiving structured, contextual, and accurate answers.*  
+📘 Ask the Textbook – AI-Powered Learning Assistant
+Turn a textbook into a tutor. This tool lets learners query Tony Bates’ Teaching in a Digital Age using natural language—receiving structured, contextual, and accurate answers.
 Built with Streamlit, LangChain, FAISS, GPT-4o — and embedded inside an Articulate Rise course.
 
----
-
-## 🔍 What It Does
-
+🔍 What It Does
 This assistant lets users:
 
-- Ask natural-language questions about the textbook
-- Get clear, contextual answers grounded in the text (no guessing or hallucinations)
-- Interact with a tutor modeled on Tony Bates’ tone and reasoning
-- Explore course design, media selection, assessment, and more
+Ask natural-language questions about the textbook
 
----
+Get clear, grounded answers based on actual content (no hallucinations)
 
-## 🎯 Who It’s For
+Interact with a tutor modeled on Tony Bates’ tone and reasoning
 
-Ideal for:
+Explore topics like course design, media selection, and online assessment
 
-- Instructional designers and curriculum developers
-- Online educators and PD facilitators
-- Learning tech teams exploring AI integration
-- Anyone using *Teaching in a Digital Age* for instructional planning
+🎯 Who It’s For
+Designed for:
 
----
+Instructional designers and curriculum developers
 
-## 🌐 Try It Out
+Online educators and PD facilitators
 
-📺 [Launch the chatbot](https://my-streamlit-app-yj1z.onrender.com)  
-📺 [Embedded in an interactive Rise course](https://www.garyhills.dev/ai/)
+EdTech teams exploring AI integration
 
----
+Anyone using Teaching in a Digital Age in practice or training
 
-## 🛠 Tech Stack
+🌐 Try It Out
+🔗 Launch the assistant
+🔗 See it embedded in a Rise course
 
-- **Streamlit** – rapid web app development
-- **LangChain** – document chunking & retrieval
-- **OpenAI GPT-4o** – natural-language reasoning engine
-- **FAISS** – fast semantic search
-- **Render** – cloud hosting
-- **Articulate Rise + WordPress** – optional front-end delivery
+🛠 Tech Stack
+Streamlit – interactive UI and app runtime
 
----
+LangChain – document parsing & retrieval
 
-## 📚 Why This Textbook?
+OpenAI GPT-4o – language model interface
 
-- Tony Bates is a respected voice in digital education
-- Openly licensed under CC BY
-- Modular and well-structured—ideal for vector search
-- Broadly used in higher ed, PD, and online course design
+FAISS – semantic search over textbook content
 
----
+Render – fast, free-tier cloud hosting
 
-## 📂 Project Structure
+📚 Why This Textbook?
+Authored by Tony Bates, a leading voice in digital education
 
-| File | Purpose |
-|------|---------|
-| `app.py` | Main Streamlit app logic — handles UI, query input, and response rendering |
-| `vectorstore_utils.py` | Utility functions for chunking, embedding, and FAISS retrieval |
-| `teaching-in-a-digital-age.txt` | Full textbook content used to generate embeddings |
-| `initial_prompt.txt` | System prompt defining assistant behavior, tone, and response structure |
-| `requirements.txt` | Python dependencies for local or hosted deployment |
-| `Dockerfile` | Container setup for deployment on Render |
-| `nginx.conf` | Nginx configuration for routing and static assets (used in Docker image) |
-| `README.md` | Project overview, usage instructions, and design philosophy |
+Openly licensed (CC BY)
 
----
+Structured and modular — perfect for chunk-based retrieval
 
-## 🧠 Prompt Design Philosophy
+Widely used in instructional design courses and PD programs
 
-This assistant doesn’t just respond—it teaches.
+📂 Project Structure
+File	Purpose
+app.py	Main app logic (Streamlit UI, user query flow)
+vectorstore_utils.py	FAISS setup and embedding logic
+teaching-in-a-digital-age.txt	Source document
+initial_prompt.txt	System prompt shaping assistant behavior
+requirements.txt	App dependencies
+README.md	Project overview and usage guide
 
-The `initial_prompt.txt` defines how the AI speaks, reasons, and responds, with a focus on:
+🧠 Prompt Design Philosophy
+The assistant aims to teach, not just chat.
 
-- **Clarity over creativity**  
-- **Instructional logic** (definition → explanation → implication → optional follow-up)  
-- **Groundedness** (won’t fabricate—admits when something isn’t in the text)  
-- **Tone matching** Bates' educational style  
+The prompt defines tone and logic with:
 
-This isn’t just an AI chatbot—it’s a focused teaching tool aligned with digital learning principles.
+Clear instructional structure (definition → explanation → implication)
 
----
+Minimal creativity, maximum groundedness
 
-## 🚀 Local Setup
+Educational tone aligned with Bates’ style
 
-```bash
-git clone https://github.com/GaryHills1123/my-streamlit-app.git
-cd my-streamlit-app
+🚀 Local Setup (Optional)
+bash
+Copy
+Edit
+git clone https://github.com/YOUR_USERNAME/your-repo.git
+cd your-repo
 pip install -r requirements.txt
 streamlit run app.py
-```
-
----
-
-## 🤝 Contribute or Connect
-
-Got feedback, ideas, or want to collaborate? Reach out via [garyhills.dev](https://garyhills.dev) or fork the repo and start experimenting.
+🤝 Contribute or Connect
+Got ideas or feedback? Fork the repo or connect via garyhills.dev.
