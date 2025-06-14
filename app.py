@@ -28,3 +28,24 @@ qa_chain = RetrievalQA.from_chain_type(
 if query:
     result = qa_chain.run(query)
     st.write(result)
+
+    # ElevenLabs TTS (optional playback)
+    try:
+        from elevenlabs import generate, set_api_key
+        import os
+
+        # Set API key from env var
+        set_api_key(os.getenv("ELEVENLABS_API_KEY"))
+
+        # Generate speech from response text
+        audio = generate(
+            text=result,
+            voice="Adam",  # Try "Bella", "Adam", "Antoni", etc.
+            model="eleven_monolingual_v1"
+        )
+
+        # Play audio in Streamlit
+        st.audio(audio, format="audio/mp3")
+
+    except Exception as e:
+        st.warning(f"Audio generation failed: {e}")
