@@ -1,3 +1,6 @@
+import streamlit.web.server.server_util as server_util
+server_util._add_header = lambda *args, **kwargs: None
+
 import streamlit as st
 
 from langchain_community.chat_models import ChatOpenAI
