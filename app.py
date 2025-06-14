@@ -25,13 +25,13 @@ if query:
     st.write(result)
 
     # ElevenLabs TTS (modern SDK)
-    try:
-        client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
-        audio = client.generate(
-            text=result,
-            voice="Adam",
-            model="eleven_monolingual_v1"
-        )
-        st.audio(audio, format="audio/mp3")
-    except Exception as e:
-        st.warning(f"Audio generation failed: {e}")
+  try:
+    client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+    audio = client.tts.generate(
+        text=result,
+        voice="Adam",
+        model="eleven_monolingual_v1"
+    )
+    st.audio(audio, format="audio/mp3")
+except Exception as e:
+    st.warning(f"Audio generation failed: {e}")
