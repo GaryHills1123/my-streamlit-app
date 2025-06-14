@@ -2,8 +2,13 @@
 # server_util._add_header = lambda *args, **kwargs: None
 
 import streamlit as st
-
-from elevenlabs import generate, set_api_key
+from elevenlabs.client import ElevenLabs
+client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+audio = client.generate(
+    text=result,
+    voice="Rachel",
+    model="eleven_monolingual_v1"
+)
 from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from vectorstore_utils import load_or_build_vectorstore
