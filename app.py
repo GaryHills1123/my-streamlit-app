@@ -12,8 +12,11 @@ st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 query = st.text_input("💬 Ask a question:")
 
 vectorstore = load_or_build_vectorstore()
+
+# Set up the language model
 llm = ChatOpenAI(model="gpt-4o", temperature=1)
 
+# Set up the retrieval-based QA chain
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=vectorstore.as_retriever(),
@@ -24,7 +27,7 @@ if query:
     result = qa_chain.run(query)
     st.write(result)
 
-    # ElevenLabs TTS (correct API usage with correct indentation)
+    # ElevenLabs TTS integration
     try:
         client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         audio = client.tts.generate(
