@@ -1,5 +1,5 @@
-import streamlit.web.server.server_util as server_util
-server_util._add_header = lambda *args, **kwargs: None
+# import streamlit.web.server.server_util as server_util
+# server_util._add_header = lambda *args, **kwargs: None
 
 import streamlit as st
 
