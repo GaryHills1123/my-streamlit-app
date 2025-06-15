@@ -40,6 +40,7 @@ if query:
             voice_id="21m00Tcm4TlvDq8ikWAM",        # Rachel's voice ID
             model_id="eleven_multilingual_v2",
             output_format="mp3_22050_32"
+            optimize_streaming_latency=1  # Required kwarg; range: 0 (best latency) to 4 (best quality)
         )
 
         # Convert to byte stream for playback
