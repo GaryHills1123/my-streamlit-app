@@ -47,7 +47,8 @@ if query:
         audio_bytes = b"".join(audio_generator)
 
         # Play audio in Streamlit
-        st.audio(audio_bytes, format="audio/mp3")
-
+        from io import BytesIO
+        st.audio(BytesIO(audio_bytes), format="audio/mp3")
+        
     except Exception as e:
         st.warning(f"Audio generation failed: {e}")
