@@ -27,15 +27,15 @@ if query:
     result = qa_chain.run(query)
     st.write(result)
 
-    # ElevenLabs TTS integration
+    # ElevenLabs TTS (official v1+ SDK method)
     try:
-    client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
-    audio = client.text_to_speech.convert(
-        text=result,
-        voice_id="21m00Tcm4TlvDq8ikWAM",
-        model_id="eleven_multilingual_v2",
-        output_format="mp3_22050_32"
-    )
-    st.audio(audio, format="audio/mp3")
-except Exception as e:
-    st.warning(f"Audio generation failed: {e}")
+        client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+        audio = client.text_to_speech.convert(
+            text=result,
+            voice_id="21m00Tcm4TlvDq8ikWAM",         # Rachel's voice
+            model_id="eleven_multilingual_v2",      # Can also try: eleven_monolingual_v1
+            output_format="mp3_22050_32"            # Good quality with small size
+        )
+        st.audio(audio, format="audio/mp3")
+    except Exception as e:
+        st.warning(f"Audio generation failed: {e}")
