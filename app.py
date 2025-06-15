@@ -14,7 +14,7 @@ with open("initial_prompt.txt", "r", encoding="utf-8") as f:
 # Streamlit UI
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 st.title("Ask the Textbook")
-st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
+st.caption("Powered by insights from Tony Bates’ *Teaching in a Digital Age* — ask away.")
 
 query = st.text_input("💬 Ask a question:")
 
