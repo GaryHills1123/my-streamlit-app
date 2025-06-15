@@ -36,6 +36,7 @@ if query:
             model_id="eleven_multilingual_v2",      # Can also try: eleven_monolingual_v1
             output_format="mp3_22050_32"            # Good quality with small size
         )
-        st.audio(audio, format="audio/mp3")
+        audio_bytes = b''.join(audio_generator)
+        st.audio(audio_bytes, format="audio/mp3")
     except Exception as e:
         st.warning(f"Audio generation failed: {e}")
