@@ -7,23 +7,22 @@ from langchain.prompts import PromptTemplate
 from vectorstore_utils import load_or_build_vectorstore
 from io import BytesIO
 
-# Load system prompt at runtime
+# Load system prompt from file
 with open("initial_prompt.txt", "r", encoding="utf-8") as f:
     system_prompt = f.read()
 
-# Set Streamlit page config
+# Streamlit UI
 st.set_page_config(page_title="📘 Ask the Textbook", page_icon="📘")
 st.title("Ask the Textbook")
 st.caption("Ask anything about Tony Bates' *Teaching in a Digital Age*")
 
-# Get user query
 query = st.text_input("💬 Ask a question:")
 
-# Load vector store and LLM
+# Load vectorstore and LLM
 vectorstore = load_or_build_vectorstore()
 llm = ChatOpenAI(model="gpt-4o", temperature=1)
 
-# Correct prompt: declare only 'question', but include {context} in template
+# Build prompt template
 prompt_template = PromptTemplate(
     input_variables=["question"],
     template=f"""{system_prompt}
@@ -37,15 +36,18 @@ Question:
 Answer:"""
 )
 
-# Create RetrievalQA chain using the corrected prompt
+# Build RetrievalQA with explicit document_variable_name
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=vectorstore.as_retriever(),
     chain_type="stuff",
-    chain_type_kwargs={"prompt": prompt_template}
+    chain_type_kwargs={
+        "prompt": prompt_template,
+        "document_variable_name": "context"
+    }
 )
 
-# Run query and return result
+# Run response + TTS
 if query:
     result = qa_chain.run(query)
     st.write(result)
@@ -54,7 +56,7 @@ if query:
         client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         audio_generator = client.text_to_speech.convert(
             text=result,
-            voice_id="21m00Tcm4TlvDq8ikWAM",
+            voice_id="21m00Tcm4TlvDq8ikWAM",  # Replace with your professor voice ID
             model_id="eleven_multilingual_v2",
             output_format="mp3_22050_32",
             optimize_streaming_latency=1
