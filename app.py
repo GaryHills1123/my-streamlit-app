@@ -29,12 +29,13 @@ if query:
 
     # ElevenLabs TTS integration
     try:
-        client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
-        audio = client.tts.generate(
-            text=result,
-            voice="Adam",
-            model="eleven_monolingual_v1"
-        )
-        st.audio(audio, format="audio/mp3")
-    except Exception as e:
-        st.warning(f"Audio generation failed: {e}")
+    client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+    audio = client.text_to_speech.convert(
+        text=result,
+        voice_id="21m00Tcm4TlvDq8ikWAM",
+        model_id="eleven_multilingual_v2",
+        output_format="mp3_22050_32"
+    )
+    st.audio(audio, format="audio/mp3")
+except Exception as e:
+    st.warning(f"Audio generation failed: {e}")
