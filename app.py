@@ -56,7 +56,7 @@ if query:
         client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         audio_generator = client.text_to_speech.convert(
             text=result,
-            voice_id="Aidp5VE7mbCrwcGQUJxB",  # ← my voice
+            voice_id="jn34bTlmmOgOJU9XfPuy",  # ← university prof voice
             model_id="eleven_multilingual_v2",
             output_format="mp3_22050_32",
             optimize_streaming_latency=1
