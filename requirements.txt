@@ -6,4 +6,4 @@ openai
 faiss-cpu
 tiktoken
 chardet
-git+https://github.com/elevenlabs/elevenlabs-python.git
+elevenlabs==1.1.0
