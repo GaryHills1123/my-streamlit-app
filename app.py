@@ -1,4 +1,3 @@
-
 import os
 import streamlit as st
 from elevenlabs.client import ElevenLabs
@@ -8,7 +7,7 @@ from langchain.prompts import PromptTemplate
 from vectorstore_utils import load_or_build_vectorstore
 from io import BytesIO
 
-# Read the system prompt from file at runtime
+# Load system prompt at runtime
 with open("initial_prompt.txt", "r", encoding="utf-8") as f:
     system_prompt = f.read()
 
@@ -24,21 +23,21 @@ query = st.text_input("💬 Ask a question:")
 vectorstore = load_or_build_vectorstore()
 llm = ChatOpenAI(model="gpt-4o", temperature=1)
 
-# Create prompt template using dynamic system prompt
+# Correct prompt: declare only 'question', but include {context} in template
 prompt_template = PromptTemplate(
-    input_variables=["context", "question"],
+    input_variables=["question"],
     template=f"""{system_prompt}
 
-    Context:
-    {{{{context}}}}
+Context:
+{{context}}
 
-    Question:
-    {{{{question}}}}
+Question:
+{{question}}
 
-    Answer:"""
+Answer:"""
 )
 
-# Create RetrievalQA chain with the custom prompt
+# Create RetrievalQA chain using the corrected prompt
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=vectorstore.as_retriever(),
@@ -46,7 +45,7 @@ qa_chain = RetrievalQA.from_chain_type(
     chain_type_kwargs={"prompt": prompt_template}
 )
 
-# Handle user query
+# Run query and return result
 if query:
     result = qa_chain.run(query)
     st.write(result)
