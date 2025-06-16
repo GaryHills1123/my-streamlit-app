@@ -6,6 +6,21 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from vectorstore_utils import load_or_build_vectorstore
 from io import BytesIO
+import requests
+
+def log_to_n8n(question, answer, user_email="anonymous"):
+    try:
+        webhook_url = "https://garyhills.app.n8n.cloud/webhook/storeQA"
+        auth = ("streamlit", "g4ryR0cks@2025!")  # your Basic Auth credentials
+        payload = {
+            "question": question,
+            "answer": answer,
+            "email": user_email
+        }
+        res = requests.post(webhook_url, json=payload, auth=auth, timeout=3)
+        res.raise_for_status()
+    except Exception as e:
+        print(f"[n8n webhook failed] {e}")
 
 # Load system prompt from file
 with open("initial_prompt.txt", "r", encoding="utf-8") as f:
