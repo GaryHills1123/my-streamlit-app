@@ -66,7 +66,10 @@ qa_chain = RetrievalQA.from_chain_type(
 if query:
     result = qa_chain.run(query)
     st.write(result)
-
+    
+    # ✅ Log Q&A to n8n/Google Sheets
+    log_to_n8n(query, result, "anonymous")
+    
     try:
         client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         audio_generator = client.text_to_speech.convert(
