@@ -10,7 +10,7 @@ import requests
 
 def log_to_n8n(question, answer, user_email="anonymous"):
     try:
-        webhook_url = "https://garyhills.app.n8n.cloud/webhook/storeQA"
+        webhook_url = "https://garythills.app.n8n.cloud/webhook-test/storeQA"
         auth = ("streamlit", "g4ryR0cks@2025!")  # your Basic Auth credentials
         payload = {
             "question": question,
