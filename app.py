@@ -20,7 +20,7 @@ query = st.text_input("💬 Ask a question:")
 
 # Load vectorstore and LLM
 vectorstore = load_or_build_vectorstore()
-llm = ChatOpenAI(model="gpt-4o", temperature=0.3)
+llm = ChatOpenAI(model="text-embedding-3-small", temperature=0.3)
 
 # Build prompt template
 prompt_template = PromptTemplate(
